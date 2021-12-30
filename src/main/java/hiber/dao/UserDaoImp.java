@@ -40,13 +40,13 @@ public class UserDaoImp implements UserDao {
     @SuppressWarnings("unchecked")
     public User findUsers(String model, int series) {
 
-        User user = new User();
+       User user = new User();
         Query query = sessionFactory.getCurrentSession().createQuery("FROM Car  WHERE model=:model AND series=:series");
         query.setParameter("model", model);
         query.setParameter("series", series);
         List<Car> carList  = query.getResultList();
         for (Car car:carList) {
-             user = car.getUser();
+            user.setUserCars(car);
         }
         return user;
 
