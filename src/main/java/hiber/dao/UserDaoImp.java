@@ -20,11 +20,10 @@ public class UserDaoImp implements UserDao {
    private SessionFactory sessionFactory;
 
    @Override
-   public void add(User user,String model, int series) {
-    Car car = new Car(model,series);
-     Session session = sessionFactory.getCurrentSession();
-     user.setUserCars(car);
-     session.save(user);
+   public void add(User user) {
+      sessionFactory.getCurrentSession().save(user.getUserCars());
+      sessionFactory.getCurrentSession().save(user);
+
    }
 
 
@@ -35,20 +34,13 @@ public class UserDaoImp implements UserDao {
       TypedQuery<User> query=sessionFactory.getCurrentSession().createQuery("from User");
       return query.getResultList();
    }
-
-    @Override
     @SuppressWarnings("unchecked")
-    public User findUsers(String model, int series) {
+    @Override
+    public List <User> findUsers(String model, int series) {
 
-       User user = new User();
-        Query query = sessionFactory.getCurrentSession().createQuery("FROM Car  WHERE model=:model AND series=:series");
+        Query query = sessionFactory.getCurrentSession().createQuery("select user from User user  where user.car.model = :model and user.car.series = :series");
         query.setParameter("model", model);
         query.setParameter("series", series);
-        List<Car> carList  = query.getResultList();
-        for (Car car:carList) {
-            user.setUserCars(car);
-        }
-        return user;
-
+        return query.getResultList();
     }
 }
